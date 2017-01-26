@@ -18,23 +18,24 @@ public class buttons : MonoBehaviour {
 	void Update () {
 		
 	}
+	
 	public string checkButtons(){
 		if (vr.on) {
-			if (right.gripped) {
-				return "vrPickupR";
-			}else if (left.gripped) {
-				return "Pickup";
-			}else if (left.triggerPressed || right.triggerPressed) {
+			/*if (left.triggerPressed || right.triggerPressed) {
 				return "Flashlight";
 			} else {
 				return null;
-			}
+			}*/
+			return null;
 		}else{
 			if (Input.GetKeyDown (KeyCode.E)) {
 				return "Pickup";
 			} else if (Input.GetKeyDown (KeyCode.F)) {
 				return "Flashlight";
-			} else {
+			} else if(Input.GetKey("q")){
+				Application.Quit();
+				return null;
+			}else {
 				return null;
 			}
 		}

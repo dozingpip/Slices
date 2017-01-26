@@ -6,11 +6,8 @@ public class PFixedJoint : MonoBehaviour {
 	SteamVR_TrackedObject trackedObj;
 	SteamVR_Controller.Device device;
 	public Rigidbody rigidbodyAttachpt;
-	public Transform obj;
-
 	FixedJoint fixedJoint;
 
-	// Use this for initialization
 	void Awake () {
 		trackedObj = GetComponent<SteamVR_TrackedObject>();
 	}
@@ -18,24 +15,29 @@ public class PFixedJoint : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () {
 		device = SteamVR_Controller.Input((int)trackedObj.index);
-		if(device.GetPressUp(SteamVR_Controller.ButtonMask.Touchpad)){
-			obj.transform.position = Vector3.zero;
-			obj.GetComponent<Rigidbody>().velocity = Vector3.zero;
-			obj.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-		}
 	}
 
 	void OnTriggerStay(Collider col){
-		if(fixedJoint ==null && device.GetTouch(SteamVR_Controller.ButtonMask.Trigger)){
+		Rigidbody rb = col.gameObject.GetComponent<Rigidbody>();
+		if(fixedJoint == null && device.GetTouch(SteamVR_Controller.ButtonMask.Trigger) && col.gameObject.tag.Contains("pickable")){
 			fixedJoint = col.gameObject.AddComponent<FixedJoint>();
 			fixedJoint.connectedBody = rigidbodyAttachpt;
-		}else if(fixedJoint != null && device.GetTouch(SteamVR_Controller.ButtonMask.Trigger)){
+			if(col.gameObject.tag.Contains("body")){
+				col.gameObject.transform.Find("label(Clone)").gameObject.GetComponent<showLabel>().show();
+			}
+		}else if(fixedJoint != null && device.GetTouchUp(SteamVR_Controller.ButtonMask.Trigger)){
 			GameObject go = fixedJoint.gameObject;
 			Rigidbody rigidbody = go.GetComponent<Rigidbody>();
 			Object.Destroy(fixedJoint);
 			fixedJoint = null;
+			col.gameObject.transform.parent = null;
+			tossObject(rigidbody);
+			if(go.tag.Contains("body")){
+				go.transform.Find("label(Clone)").gameObject.GetComponent<showLabel>().hide();
+			}
 		}
 	}
+
 	void tossObject(Rigidbody rigidBody){
 		//convert local vectors to worldspace vectors
 		//ternary operator means if thing before ? is true, return the first value, if false return the value after the colon.
