@@ -30,17 +30,10 @@ public class flashlight : MonoBehaviour {
         //Debug.DrawRay(transform.position, forward, Color.green);
 		Ray ray = new Ray (transform.position, forward);
         if (Physics.Raycast(transform.position, forward, out hit, light) && hit.collider.gameObject.tag == "enemy"){
-                Debug.Log("boop!");
         		GameObject enemy = hit.collider.gameObject;
                 if(hit.collider == enemy.GetComponent<StatePatternEnemy>().triggerBox){
         			enemy.GetComponent<StatePatternEnemy>().gotHit();
         		}
         }
 	}
-
-	/*void onTriggerStay(Collider col){
-		if(col.gameObject.tag == "enemy" && col == col.GetComponent<StatePatternEnemy>().triggerBox){
-			col.GetComponent<StatePatternEnemy>().health--;
-		}
-	}*/
 }
