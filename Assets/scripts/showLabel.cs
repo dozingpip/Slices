@@ -5,8 +5,8 @@ using UnityEngine;
 public class showLabel : MonoBehaviour {
 	public GameObject label;
 	// Use this for initialization
-	void Start () {
-		
+	void Awake () {
+
 	}
 	
 	// Update is called once per frame
@@ -15,9 +15,11 @@ public class showLabel : MonoBehaviour {
 	}
 
 	public void show(){
+		GetComponent<MeshRenderer>().enabled = true;
 		label.SetActive(true);
 	}
 	public void hide(){
+		GetComponent<MeshRenderer>().enabled = false;
 		label.SetActive(false);
 	}
 }

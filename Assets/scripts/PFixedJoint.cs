@@ -7,6 +7,8 @@ public class PFixedJoint : MonoBehaviour {
 	SteamVR_Controller.Device device;
 	public Rigidbody rigidbodyAttachpt;
 	FixedJoint fixedJoint;
+	Vector3 origPos;
+	Transform origParent;
 
 	void Awake () {
 		trackedObj = GetComponent<SteamVR_TrackedObject>();
@@ -19,23 +21,26 @@ public class PFixedJoint : MonoBehaviour {
 
 	void OnTriggerStay(Collider col){
 		Rigidbody rb = col.gameObject.GetComponent<Rigidbody>();
+		//if the fixedjoint isnt there, the trigger button is pressed, and object is pickable
 		if(fixedJoint == null && device.GetTouch(SteamVR_Controller.ButtonMask.Trigger) && col.gameObject.tag.Contains("pickable")){
+			//add the fixed joint and attach it to the controller (in hierarchy and with fixed joint)
 			fixedJoint = col.gameObject.AddComponent<FixedJoint>();
 			fixedJoint.connectedBody = rigidbodyAttachpt;
-			if(col.gameObject.tag.Contains("body")){
-				col.gameObject.transform.Find("label(Clone)").gameObject.GetComponent<showLabel>().show();
-			}
+		//if the fixed joint is already there, and the trigger has just been unpressed, must be dropping the object
 		}else if(fixedJoint != null && device.GetTouchUp(SteamVR_Controller.ButtonMask.Trigger)){
 			GameObject go = fixedJoint.gameObject;
 			Rigidbody rigidbody = go.GetComponent<Rigidbody>();
 			Object.Destroy(fixedJoint);
 			fixedJoint = null;
-			col.gameObject.transform.parent = null;
-			tossObject(rigidbody);
-			if(go.tag.Contains("body")){
-				go.transform.Find("label(Clone)").gameObject.GetComponent<showLabel>().hide();
+
+			//if the object has "body" tag
+			if(!go.tag.Contains("body")){
+				//all the things relating to physically dropping the object
+				tossObject(rigidbody);
 			}
 		}
+		if(rb != null)
+			rb.WakeUp();
 	}
 
 	void tossObject(Rigidbody rigidBody){
