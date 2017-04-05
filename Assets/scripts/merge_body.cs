@@ -94,11 +94,6 @@ public class merge_body : MonoBehaviour {
      			Object.Destroy(lastSelected.gameObject.GetComponent<FixedJoint>());
      		Object.Destroy(lastSelected.gameObject.GetComponent<Rigidbody>());
 		}
-		/*if(s != null){
-			float step = speedU * Time.deltaTime;
-			Vector3 toward = new Vector3(transform.position.x, transform.position.y+0.8f, s.position.z);
-			s.position = Vector3.MoveTowards(s.position, toward, step);
-		}*/
 	}
 
 	void teleportTo(Transform part){
