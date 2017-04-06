@@ -48,8 +48,8 @@ public class controller_stuff : MonoBehaviour {
 
 	void Update(){
 	    
-	    rightD = SteamVR_Controller.Input((int)right.index);
-    	leftD = SteamVR_Controller.Input((int)left.index);
+	    rightD = SteamVR_Controller.Input(SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.Rightmost));
+    	leftD = SteamVR_Controller.Input(SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.Leftmost));
 
 		grip = rightD.GetTouchUp(SteamVR_Controller.ButtonMask.Grip) || leftD.GetTouchUp(SteamVR_Controller.ButtonMask.Grip);
 		axisR = touchAxis(rightD);

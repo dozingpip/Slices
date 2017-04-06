@@ -6,14 +6,15 @@ using VRStandardAssets.Utils;
 public class merge_body : MonoBehaviour {
 	public controller_stuff controller;
 	public GUIArrows arrows;
-	public Transform first;
-	public Transform last;
 	public Transform indicator;
 	public bool locked = false;
 	public Transform selected = null;
 	Transform lastSelected;
-	int index;
+	float index;
+	int timeScrolling;
 	float speedD = 4f;
+	float speed;
+	public float scrollSmallestInc;
 	public Transform OriginTransform;
 
 
@@ -45,37 +46,28 @@ public class merge_body : MonoBehaviour {
 				part.position = new Vector3(0, transform.position.y,(controller.totalDist*10 * (incount/transform.childCount) ) );
 			}
 		}else if(locked){
-			//if scrolling up (positive scroll amount)
-			if(controller.scroll > 0.5f){
-				//increment the index of the scroll by 1 (unless it's already at the last item in the list,
-				// in that case go back to the first spot)
-				if(index < transform.childCount-1)
-					index+=1;
+			if(controller.scroll > 0.2f){
+				speed = scrollSwitch(controller.scroll);
+				if(index + speed < transform.childCount - 1)
+					index+= speed;
 				else
 					index = 0;
 				lastSelected = selected;
-				//adjust the position of the indicator block to show where you're scrolling and how fast index
-				// is being incremented
-				indicator.position = new Vector3(0, indicator.position.y, transform.GetChild(index).position.z);
-			}else if(controller.scroll < -0.5f){
-				if(index > 0)
-					index-=1;
+				//adjust the position of the indicator block to show where you're scrolling and
+				// how fast index is being incremented
+				updateIndicator(index);
+			}else if(controller.scroll < -0.2f){
+				speed = scrollSwitch(-controller.scroll);
+				if(index -speed > 0)
+					index-=speed;
 				else
 					index = transform.childCount-1;
 				lastSelected = selected;
-				indicator.position = new Vector3(0, indicator.position.y, transform.GetChild(index).position.z);
+				updateIndicator(index);
 			}else{
-				selected = transform.GetChild(index);
-				selected.gameObject.tag = "pickable body";
-				selected.Find("label(Clone)").gameObject.GetComponent<showLabel>().show();
-				if(selected.gameObject.GetComponent<Rigidbody>() == null)
-					selected.gameObject.AddComponent<Rigidbody>();
-				if(lastSelected != null){
-					lastSelected.gameObject.tag = "body";
-					selected.Find("label(Clone)").gameObject.GetComponent<showLabel>().hide();
-				}
-				if (selected != lastSelected)
-					updatePositions(lastSelected);
+				timeScrolling = 0;
+				selected = transform.GetChild((int)Mathf.Round(index));
+				select(selected, lastSelected);
 				if(controller.menu){
 					teleportTo(selected);
 					//arrows.WakeUp();
@@ -96,8 +88,41 @@ public class merge_body : MonoBehaviour {
 		}
 	}
 
+	void updateIndicator(float i){
+		indicator.position = new Vector3(0, indicator.position.y, transform.GetChild((int)Mathf.Round(index)).position.z);
+		timeScrolling+=1;
+	}
+
 	void teleportTo(Transform part){
 		Vector3 offset = new Vector3(0, -1.0f, 0.1f);
 		OriginTransform.position = part.position + offset;
+	}
+
+	public void teleportTo(string part){
+		Vector3 offset = new Vector3(0, -1.0f, 0.1f);
+		OriginTransform.position = transform.Find(part).position + offset;
+	}
+	void select(Transform selected, Transform lastSelected){
+		selected.gameObject.tag = "pickable body";
+		selected.Find("label(Clone)").gameObject.GetComponent<showLabel>().show();
+		if(selected.gameObject.GetComponent<Rigidbody>() == null)
+			selected.gameObject.AddComponent<Rigidbody>();
+		if(lastSelected != null){
+			lastSelected.gameObject.tag = "body";
+			selected.Find("label(Clone)").gameObject.GetComponent<showLabel>().hide();
+		}
+		if (selected != lastSelected)
+			updatePositions(lastSelected);
+	}
+
+	float scrollSwitch(float scrollAmount){
+		if(scrollAmount > 0.8){
+			speed = scrollSmallestInc*4*(timeScrolling/30);
+		}else if (scrollAmount > 0.5){
+			speed = scrollSmallestInc*2;
+		}else if (scrollAmount > 0.2){
+			speed = scrollSmallestInc;
+		}
+		return speed;
 	}
 }
