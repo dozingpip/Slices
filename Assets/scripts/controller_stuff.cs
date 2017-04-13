@@ -7,10 +7,10 @@ public class controller_stuff : MonoBehaviour {
 	public SteamVR_TrackedObject left;
 	public SteamVR_TrackedObject right;
 	//public GameObject head;
-	//public Vector3 distanceC;
 	public float totalDist;
 	//float distLC;
 	//float distRC;
+	public float distHead;
 	public GameObject cube;
 	public GameObject selected;
 	Vector3 minSize;
@@ -21,6 +21,7 @@ public class controller_stuff : MonoBehaviour {
 	SteamVR_Controller.Device rightD;
 	SteamVR_Controller.Device leftD;
 	public bool grip = false;
+	public bool leftMenu = false;
 	Vector2 axisR, axisL;
 	Vector3 rightPos, leftPos;
 	public float scroll;
@@ -55,7 +56,12 @@ public class controller_stuff : MonoBehaviour {
 		axisR = touchAxis(rightD);
 		axisL = touchAxis(leftD);
 		menu = rightD.GetPressUp(SteamVR_Controller.ButtonMask.ApplicationMenu) || leftD.GetPressUp(SteamVR_Controller.ButtonMask.ApplicationMenu);
-
+		leftMenu = leftD.GetPressUp(SteamVR_Controller.ButtonMask.ApplicationMenu);
+		/*if(distRC <= distLC)
+			distHead = distRC;
+		else
+			distHead = distLC;
+		*/
 		if(Mathf.Abs(axisR[1]) > Mathf.Abs(axisL[1]))
 			scroll = axisR[1];
 		else
@@ -80,8 +86,6 @@ public class controller_stuff : MonoBehaviour {
 		}
 
 		if(!sizeLocked){
-			//distanceC  = leftPos - rightPos;
-			//distanceC = new Vector3(Mathf.Abs(distanceC.x), Mathf.Abs(distanceC.y), Mathf.Abs(distanceC.z));
 			//distRC = Vector3.Distance(head.transform.position, rightPos);
 			//distLC = Vector3.Distance(head.transform.position, leftPos);
 			totalDist = Vector3.Distance(leftPos, rightPos);

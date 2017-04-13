@@ -31,6 +31,8 @@ public class merge_body : MonoBehaviour {
 			foreach(Transform part in transform){
 				part.position = new Vector3(0, transform.position.y, part.position.z);
 			}
+			selected.gameObject.tag = "body";
+			Object.Destroy(selected.GetComponent<Rigidbody>());
 		}else if(controller.grip && !locked){
 			index = 0;
 			locked = true;
@@ -69,7 +71,7 @@ public class merge_body : MonoBehaviour {
 				selected = transform.GetChild((int)Mathf.Round(index));
 				select(selected, lastSelected);
 				if(controller.menu){
-					teleportTo(selected);
+					teleportTo(selected.gameObject.name);
 					//arrows.WakeUp();
 				}
 			}
@@ -93,15 +95,13 @@ public class merge_body : MonoBehaviour {
 		timeScrolling+=1;
 	}
 
-	void teleportTo(Transform part){
-		Vector3 offset = new Vector3(0, -1.0f, 0.1f);
-		OriginTransform.position = part.position + offset;
-	}
 
-	public void teleportTo(string part){
-		Vector3 offset = new Vector3(0, -1.0f, 0.1f);
-		OriginTransform.position = transform.Find(part).position + offset;
+	public void teleportTo(string partName){
+		//Debug.Log("teleporting to " + partName);
+		Vector3 offset = new Vector3(0f, -1.0f, 0.2f);
+		OriginTransform.position = transform.Find(partName).position + offset;
 	}
+	
 	void select(Transform selected, Transform lastSelected){
 		selected.gameObject.tag = "pickable body";
 		selected.Find("label(Clone)").gameObject.GetComponent<showLabel>().show();

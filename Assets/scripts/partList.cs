@@ -9,6 +9,7 @@ public class partList : MonoBehaviour {
 	public GameObject button;
 	public Transform contentArea;
 	public Scrollbar scrolly;
+	public merge_body body;
 	float count;
 
 	// Use this for initialization
@@ -20,18 +21,20 @@ public class partList : MonoBehaviour {
 			but.transform.Find("Text").GetComponent<Text>().text = name;
 			but.transform.SetParent(contentArea);
 			but.name = name;
+			but.GetComponent<uiButtonPress>().body = body;
 			but.transform.localPosition = button.transform.position;
-			but.transform.localPosition = new Vector3(but.transform.localPosition.x, but.transform.localPosition.y -150 - count*30, but.transform.localPosition.z);
+			but.transform.localPosition = new Vector3(but.transform.localPosition.x, but.transform.localPosition.y -150 - count*40, but.transform.localPosition.z);
 			but.transform.localRotation = button.transform.rotation;
 			but.transform.localScale = button.transform.localScale;
 			count+=1;
 		}
 		scrolly.numberOfSteps = contentArea.childCount;
 		scrolly.size = 1/count;
+		gameObject.SetActive(false);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
+
 	}
 }

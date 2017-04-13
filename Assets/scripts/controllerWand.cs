@@ -7,7 +7,6 @@ public class controllerWand : MonoBehaviour {
 	SteamVR_TrackedObject trackedObj;
 	SteamVR_Controller.Device device;
 	LineRenderer line;
-	public merge_body body;
 
 	void Awake () {
 		trackedObj = GetComponent<SteamVR_TrackedObject>();
@@ -22,19 +21,24 @@ public class controllerWand : MonoBehaviour {
 	void Start () {
 		
 	}
+
+	void OnTriggerEnter(Collider col){
+		if(col.gameObject.tag.Contains("button"))
+			col.gameObject.GetComponent<uiButtonPress>().hover();
+	}
 	
 	// Update is called once per frame
 	void OnTriggerStay(Collider col) {
-		if(col.gameObject.tag.Contains("button")){
-			col.gameObject.GetComponent<uiButtonPress>().hover();
-		}
-
-		if(device.GetTouch(SteamVR_Controller.ButtonMask.Trigger) && col.gameObject.tag.Contains("button")){
+		if(col.gameObject.tag.Contains("button") && device.GetTouch(SteamVR_Controller.ButtonMask.Trigger)){
 			col.gameObject.GetComponent<uiButtonPress>().press();
-			Debug.Log("name " +col.gameObject.name);
-			body.teleportTo(col.gameObject.name);
-		}else if(device.GetTouchUp(SteamVR_Controller.ButtonMask.Trigger) && col.gameObject.tag.Contains("button")){
+			Debug.Log("teleporting to " + col.gameObject.name);
+		}else if(col.gameObject.tag.Contains("button") && device.GetTouchUp(SteamVR_Controller.ButtonMask.Trigger)){
 			col.gameObject.GetComponent<uiButtonPress>().unPress();
 		}
+	}
+
+	void OnTriggerExit(Collider col){
+		if(col.gameObject.tag.Contains("button"))
+			col.gameObject.GetComponent<uiButtonPress>().notHover();
 	}
 }
