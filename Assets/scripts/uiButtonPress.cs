@@ -31,7 +31,7 @@ public class uiButtonPress : MonoBehaviour {
 	public void press(){
 		Debug.Log(name + " button pressed ");
 		body.teleportTo(name);
-		showhide.hide();
+		showhide.hideList();
 		notHover();
 	}
 

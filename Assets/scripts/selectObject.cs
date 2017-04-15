@@ -5,7 +5,7 @@ using UnityEngine;
 public class selectObject : MonoBehaviour {
 	SteamVR_TrackedObject trackedObj;
 	SteamVR_Controller.Device device;
-	public controller_stuff sendTo;
+	public controller_scaler sendTo;
 
 	// Use this for initialization
 	void Awake () {

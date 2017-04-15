@@ -3,8 +3,8 @@ using System.Collections;
 using UnityEngine.VR;
 
 public class toggle_vr : MonoBehaviour {
-	GameObject vr;
-	GameObject other;
+	public GameObject vr;
+	public GameObject other;
 	public GameObject ui;
 	public bool on;
 	public Camera other_cam;

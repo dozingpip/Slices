@@ -70,7 +70,7 @@ public class merge_body : MonoBehaviour {
 				timeScrolling = 0;
 				selected = transform.GetChild((int)Mathf.Round(index));
 				select(selected, lastSelected);
-				if(controller.menu){
+				if(!controller.touching && controller.trigger){
 					teleportTo(selected.gameObject.name);
 					//arrows.WakeUp();
 				}

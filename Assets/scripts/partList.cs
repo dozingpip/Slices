@@ -30,7 +30,6 @@ public class partList : MonoBehaviour {
 		}
 		scrolly.numberOfSteps = contentArea.childCount;
 		scrolly.size = 1/count;
-		gameObject.SetActive(false);
 	}
 	
 	// Update is called once per frame
