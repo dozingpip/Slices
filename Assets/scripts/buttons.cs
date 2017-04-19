@@ -32,11 +32,13 @@ public class buttons : MonoBehaviour {
 			}
 		}else{
 			if (Input.GetKeyDown (KeyCode.E)) {
-				Debug.Log("e");
+				trigger=true;
 			} else if (Input.GetKeyDown (KeyCode.F)) {
 				Debug.Log("f");
 			} else if(Input.GetKey("q")){
 				Application.Quit();
+			}else{
+				trigger = false;
 			}
 		}
 	}

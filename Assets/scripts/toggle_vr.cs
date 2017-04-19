@@ -5,7 +5,6 @@ using UnityEngine.VR;
 public class toggle_vr : MonoBehaviour {
 	public GameObject vr;
 	public GameObject other;
-	public GameObject ui;
 	public bool on;
 	public Camera other_cam;
 	// Use this for initialization

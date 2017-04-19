@@ -17,11 +17,6 @@ public class controllerWand : MonoBehaviour {
 		device = SteamVR_Controller.Input((int)trackedObj.index);
 	}
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-
 	void OnTriggerEnter(Collider col){
 		if(col.gameObject.tag.Contains("button"))
 			col.gameObject.GetComponent<uiButtonPress>().hover();

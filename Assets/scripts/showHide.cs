@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class showHide : MonoBehaviour {
 	public controller_stuff controller;
-	public bool listShown = false;
-	public bool guideShown = true;
+	public bool listShown;
+	public bool guideShown;
 	GameObject ui;
 	public GameObject guide;
 	public GameObject listView;
@@ -20,6 +20,8 @@ public class showHide : MonoBehaviour {
 	void Start () {
 		ui = transform.Find("main ui").gameObject;
 		guideShown = true;
+		listShown = false;
+		listView.GetComponent<partList>().init();
 	}
 	
 	// Update is called once per frame

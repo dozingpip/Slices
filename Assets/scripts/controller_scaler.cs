@@ -8,12 +8,7 @@ public class controller_scaler : MonoBehaviour {
 	Vector3 minSize;
 	public bool sizeLocked = false;
 	float minHeight;
-	public string tag;
-
-	// Use this for initialization
-	void Start () {
-		
-	}
+	//public string tag;
 	
 	// Update is called once per frame
 	void FixedUpdate () {
