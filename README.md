@@ -2,6 +2,7 @@
 
 
 ##to do:
-* animations based on position (mechanim and scripts) of controllers and headset and object
-* ui interaction (body part list scroll and select)
-* arrows directing user to the body, get them to follow correctly
+* use a dictionary for the body parts, can sort through based on whatever i want
+https://unity3d.com/learn/tutorials/modules/intermediate/scripting/lists-and-dictionaries?playlist=17117
+* use interfaces for pickable and sizable?
+* 

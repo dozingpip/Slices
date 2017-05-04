@@ -2,30 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using VRStandardAssets.Utils;
+using UnityEngine.Events;
 
 public class merge_body : MonoBehaviour {
-	public controller_stuff controller;
 	public GUIArrows arrows;
-	public Transform indicator;
+	public Transform indicator, OriginTransform, selected = null;
 	public bool locked = false;
-	public Transform selected = null;
 	Transform lastSelected;
 	float index;
 	int timeScrolling;
 	float speedD = 4f;
 	float speed;
 	public float scrollSmallestInc;
-	public Transform OriginTransform;
-
+	UnityEvent grip, canTeleport;
+	FloatEvent scroll, totalDist;
 
 	// Use this for initialization
 	void Start () {
-		selected = transform;
+		//grip.AddListener(gripped);
+		//canTeleport.AddListener(can_teleport);
+		//scroll.AddListener(scrollUpdate);
+		//totalDist.AddListener(accordion);
 	}
 
-	// Update is called once per frame
-	void Update () {
-		if(controller.grip && locked){
+	public void gripped () {
+		if(locked){
+			selected = null;
 			locked = false;
 			//after just unlocking position, set all the parts to their proper positions
 			foreach(Transform part in transform){
@@ -33,23 +35,36 @@ public class merge_body : MonoBehaviour {
 			}
 			selected.gameObject.tag = "body";
 			Object.Destroy(selected.GetComponent<Rigidbody>());
-		}else if(controller.grip && !locked){
+		}else if(!locked){
 			index = 0;
 			locked = true;
 		}
+	}
+
+	public void accordion(float dist){
 		//if parts are unlocked and the controllers aren't too close together
-		if(!locked && controller.totalDist > 0.2){
+		if(!locked && dist > 0.2){
 			float incount = 0;
 			//vary position based on which index the part is in in the hierarchy.
 			foreach(Transform part in transform){
 				incount+=1;
 				//stay centered on the x, keep the main body's y position, but then for the z axis, base it on the distance 
 				//between the controllers* a constant* what index the part is at in the local hierarchy of the body
-				part.position = new Vector3(0, transform.position.y,(controller.totalDist*10 * (incount/transform.childCount) ) );
+				part.position = new Vector3(0, transform.position.y, (dist*10 * (incount/transform.childCount) ) );
 			}
-		}else if(locked){
-			if(controller.scroll > 0.2f){
-				speed = scrollSwitch(controller.scroll);
+		}
+	}
+
+	public void can_teleport(){
+		if(selected != null){
+			teleportTo(selected.name);
+		}
+	}
+
+	public void scrollUpdate(float scrollAmount){
+		if(locked){
+			if(scrollAmount > 0.2f){
+				speed = scrollSwitch(scrollAmount);
 				if(index + speed < transform.childCount - 1)
 					index+= speed;
 				else
@@ -58,8 +73,8 @@ public class merge_body : MonoBehaviour {
 				//adjust the position of the indicator block to show where you're scrolling and
 				// how fast index is being incremented
 				updateIndicator(index);
-			}else if(controller.scroll < -0.2f){
-				speed = scrollSwitch(-controller.scroll);
+			}else if(scrollAmount < -0.2f){
+				speed = scrollSwitch(-scrollAmount);
 				if(index -speed > 0)
 					index-=speed;
 				else
@@ -70,10 +85,6 @@ public class merge_body : MonoBehaviour {
 				timeScrolling = 0;
 				selected = transform.GetChild((int)Mathf.Round(index));
 				select(selected, lastSelected);
-				if(!controller.touching && controller.trigger){
-					teleportTo(selected.gameObject.name);
-					//arrows.WakeUp();
-				}
 			}
 		}
 	}

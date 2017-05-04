@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(SteamVR_TrackedObject))]
+
 public class PFixedJoint : MonoBehaviour {
 	SteamVR_TrackedObject trackedObj;
 	SteamVR_Controller.Device device;
@@ -9,13 +11,11 @@ public class PFixedJoint : MonoBehaviour {
 	FixedJoint fixedJoint;
 	Vector3 origPos;
 	Transform origParent;
-	public controller_stuff controllers;
+	bool touching;
+	UnityEvent canTeleport;
 
 	void Awake () {
 		trackedObj = GetComponent<SteamVR_TrackedObject>();
-	}
-	void Start(){
-		controllers.touching = false;
 	}
 	
 	// Update is called once per frame
@@ -23,8 +23,13 @@ public class PFixedJoint : MonoBehaviour {
 		device = SteamVR_Controller.Input((int)trackedObj.index);
 	}
 
+	void Update(){
+		if(!touching && device.GetTouch(SteamVR_Controller.ButtonMask.Trigger))
+			canTeleport.Invoke();
+	}
+
 	void OnTriggerStay(Collider col){
-		controllers.touching = true;
+		touching = true;
 		Rigidbody rb = col.gameObject.GetComponent<Rigidbody>();
 		//if the fixedjoint isnt there, the trigger button is pressed, and object is pickable
 		if(fixedJoint == null && device.GetTouch(SteamVR_Controller.ButtonMask.Trigger) && col.gameObject.tag.Contains("pickable")){
@@ -48,8 +53,8 @@ public class PFixedJoint : MonoBehaviour {
 			rb.WakeUp();
 	}
 
-	void OnTriggerExit(Collider other){
-		//controllers.touching = false;
+	void OnTriggerExit(Collider col){
+		touching = false;
 	}
 
 	void tossObject(Rigidbody rigidBody){

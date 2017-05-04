@@ -1,38 +1,25 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class nonVRpickup : MonoBehaviour {
-	public buttons buttons;
-	bool touching;
 	bool holding;
 	Transform camera;
 	Transform offset;
 	Transform origTransform;
+	UnityEvent trigger, triggerUp, canTeleport;
 	// Use this for initialization
 	void Start () {
-		touching = false;
 		camera = transform.GetChild(0);
 		offset = camera.GetChild(0);
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
-	void OnTriggerEnter(Collider col){
-		touching = true;
+		trigger.AddListener(trig);
+		triggerUp.AddListener(trigUp);
 	}
 
 	void onTriggerStay(Collider col){
 		Debug.Log("in range");
-		if(buttons.trigger){
-			holding = true;
-		}else{
-			holding = false;
-		}
-
+		canTeleport.Invoke();
 		if(holding){
 			origTransform = col.gameObject.transform;
 			col.gameObject.transform.position = offset.position;
@@ -44,7 +31,11 @@ public class nonVRpickup : MonoBehaviour {
 		}
 	}
 
-	void onTriggerExit(Collider col){
-		touching = false;
+	void trig(){
+		holding = true;
+	}
+
+	void trigUp(){
+		holding = false;
 	}
 }

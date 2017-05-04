@@ -5,14 +5,12 @@ using UnityEngine.VR;
 public class toggle_vr : MonoBehaviour {
 	public GameObject vr;
 	public GameObject other;
-	public bool on;
 	public Camera other_cam;
 	// Use this for initialization
 	void Start () {
 		vr = GameObject.FindWithTag("vr_rig");
 		other = GameObject.FindWithTag("not_vr");
 		other.SetActive (false);
-		on = true;
 		vr.transform.gameObject.tag = "Player";
 	}
 	
@@ -28,7 +26,6 @@ public class toggle_vr : MonoBehaviour {
 				other.transform.position = vr.transform.position;
 				other.transform.rotation = vr.transform.rotation;
 				other.transform.gameObject.tag = "Player";
-				on = false;
 				other_cam.enabled = true;
 				other_cam.fieldOfView = 60.0F;
 			}else{
@@ -40,7 +37,6 @@ public class toggle_vr : MonoBehaviour {
 				vr.transform.position = other.transform.position;
 				vr.transform.rotation = other.transform.rotation;
 				vr.transform.gameObject.tag = "Player";
-				on = true;
 			}
 		}
 	}

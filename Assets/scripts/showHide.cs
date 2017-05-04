@@ -1,20 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class showHide : MonoBehaviour {
-	public controller_stuff controller;
-	public bool listShown;
-	public bool guideShown;
+	public bool listShown, guideShown;
 	GameObject ui;
-	public GameObject guide;
-	public GameObject listView;
-	public Transform listShowPos;
-	public Transform listHidePos;
-	public Transform guideShowPos;
-	public Transform guideHidePos;
-	static Transform origTransform;
+	public GameObject guide, listView;
+	public Transform listShowPos, listHidePos, guideShowPos, guideHidePos, origTransform;
 	float speed = 4f;
+	public UnityEvent leftMenu, rightMenu;
 
 	// Use this for initialization
 	void Start () {
@@ -24,52 +19,45 @@ public class showHide : MonoBehaviour {
 		listView.GetComponent<partList>().init();
 	}
 	
-	// Update is called once per frame
-	void Update () {
-		if(controller.leftMenu && !listShown){
-			guideShown = false;
-			listShown = true;
-		}else if(controller.leftMenu && listShown){
-			listShown = false;
-		}
-
-		if(controller.rightMenu && !guideShown){
-			listShown = false;
-			guideShown = true;
-		}else if(controller.rightMenu && guideShown){
-			guideShown = false;
-		}
-
-		if(listShown){
-			showList();
-		}else{
+	public void rightMenuVisibility () {
+		if(!guideShown){
 			hideList();
-		}
-
-		if(guideShown){
 			showGuide();
-		}else{
+		}else if(guideShown){
 			hideGuide();
 		}
 	}
 
-	public void showList(){
+	public void leftMenuVisibility(){
+		if(!listShown){
+			hideGuide();
+			showList();
+		}else if(listShown){
+			hideList();
+		}
+	}
+
+	void showList(){
+		listShown = true;
 		ui.SetActive(true);
 		listView.transform.localScale = changeScale(listShowPos.localScale, listView.transform.localScale, 1.0f);
 		listView.transform.position = Vector3.MoveTowards(listView.transform.position, listShowPos.position, speed*Time.deltaTime);
 	}
 
 	public void hideList(){
+		listShown = false;
 		listView.transform.localScale = changeScale(listShowPos.localScale, listView.transform.localScale, 0.2f);
 		listView.transform.position = Vector3.MoveTowards(listView.transform.position, listHidePos.position, speed*Time.deltaTime);
 	}
 
 	public void showGuide(){
+		guideShown = true;
 		guide.transform.localScale = changeScale(guideShowPos.localScale, guide.transform.localScale, 3f);
 		guide.transform.position = Vector3.MoveTowards(guide.transform.position, guideShowPos.position, speed*Time.deltaTime);
 	}
 
 	public void hideGuide(){
+		guideShown = false;
 		guide.transform.localScale = changeScale(guideHidePos.localScale, guide.transform.localScale, 0.2f);
 		guide.transform.position = Vector3.MoveTowards(guide.transform.position, guideHidePos.position, speed*Time.deltaTime);
 	}
