@@ -52,7 +52,7 @@ public class PatrolState : IEnemyState
     {
         enemy.meshRendererFlag.material.color = Color.green;
         enemy.navMeshAgent.destination = enemy.wayPoints [nextWayPoint].position;
-        enemy.navMeshAgent.Resume ();
+        enemy.navMeshAgent.isStopped = false;
 
         if (enemy.navMeshAgent.remainingDistance <= enemy.navMeshAgent.stoppingDistance && !enemy.navMeshAgent.pathPending) {
             nextWayPoint =(nextWayPoint + 1) % enemy.wayPoints.Length;

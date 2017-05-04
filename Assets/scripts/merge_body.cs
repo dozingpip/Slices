@@ -70,23 +70,11 @@ public class merge_body : MonoBehaviour {
 				timeScrolling = 0;
 				selected = transform.GetChild((int)Mathf.Round(index));
 				select(selected, lastSelected);
-				if(controller.menu){
+				if(!controller.touching && controller.trigger){
 					teleportTo(selected.gameObject.name);
 					//arrows.WakeUp();
 				}
 			}
-		}
-	}
-
-	void updatePositions(Transform ls){
-		if(ls != null){
-			float step = speedD * Time.deltaTime;
-			Vector3 toward = new Vector3(transform.position.x, transform.position.y, ls.position.z);
-     		ls.position = Vector3.MoveTowards(ls.position, toward, step);
-     		lastSelected.rotation = Quaternion.Euler(90f, 0f, 0f);
-     		if(lastSelected.gameObject.GetComponent<FixedJoint>() != null)
-     			Object.Destroy(lastSelected.gameObject.GetComponent<FixedJoint>());
-     		Object.Destroy(lastSelected.gameObject.GetComponent<Rigidbody>());
 		}
 	}
 
@@ -102,17 +90,29 @@ public class merge_body : MonoBehaviour {
 		OriginTransform.position = transform.Find(partName).position + offset;
 	}
 	
-	void select(Transform selected, Transform lastSelected){
-		selected.gameObject.tag = "pickable body";
-		selected.Find("label(Clone)").gameObject.GetComponent<showLabel>().show();
-		if(selected.gameObject.GetComponent<Rigidbody>() == null)
-			selected.gameObject.AddComponent<Rigidbody>();
-		if(lastSelected != null){
-			lastSelected.gameObject.tag = "body";
-			selected.Find("label(Clone)").gameObject.GetComponent<showLabel>().hide();
+	void select(Transform s, Transform ls){
+		s.gameObject.tag = "pickable body";
+		s.Find("label(Clone)").gameObject.GetComponent<showLabel>().show();
+		if(s.gameObject.GetComponent<Rigidbody>() == null)
+			s.gameObject.AddComponent<Rigidbody>();
+		if(ls != null){
+			ls.gameObject.tag = "body";
+			s.Find("label(Clone)").gameObject.GetComponent<showLabel>().hide();
 		}
-		if (selected != lastSelected)
-			updatePositions(lastSelected);
+		if (s != ls)
+			updateLastSelected(ls);
+	}
+
+	void updateLastSelected(Transform ls){
+		if(ls != null){
+			float step = speedD * Time.deltaTime;
+			Vector3 toward = new Vector3(transform.position.x, transform.position.y, ls.position.z);
+     		ls.position = Vector3.MoveTowards(ls.position, toward, step);
+     		ls.rotation = Quaternion.Euler(90f, 0f, 0f);
+     		if(ls.gameObject.GetComponent<FixedJoint>() != null)
+     			Object.Destroy(ls.gameObject.GetComponent<FixedJoint>());
+     		Object.Destroy(ls.gameObject.GetComponent<Rigidbody>());
+		}
 	}
 
 	float scrollSwitch(float scrollAmount){

@@ -4,33 +4,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class controller_stuff : MonoBehaviour {
-	public SteamVR_TrackedObject left;
-	public SteamVR_TrackedObject right;
+	public SteamVR_TrackedObject left, right;
 	//public GameObject head;
-	public float totalDist;
-	//float distLC;
-	//float distRC;
-	public float distHead;
-	public GameObject cube;
-	public GameObject selected;
-	Vector3 minSize;
-	MeshRenderer meshRendererFlag;
-	public bool sizeLocked = false;
-	float minHeight;
-	public string tag;
-	SteamVR_Controller.Device rightD;
-	SteamVR_Controller.Device leftD;
-	public bool grip = false;
-	public bool leftMenu = false;
+	public float totalDist, distHead, scroll;
+	//float distLC, distRC;
+	SteamVR_Controller.Device rightD, leftD;
+	public bool grip, menu, touching, trigger, leftMenu, rightMenu;
 	Vector2 axisR, axisL;
-	Vector3 rightPos, leftPos;
-	public float scroll;
-	public bool menu;
+	public Vector3 rightPos, leftPos;
 
 	// Use this for initialization
 	void Start () {
-		meshRendererFlag = cube.GetComponent<MeshRenderer>();
-		selected = cube;
 	}
 
 	Vector2 touchAxis(SteamVR_Controller.Device device){
@@ -57,6 +41,9 @@ public class controller_stuff : MonoBehaviour {
 		axisL = touchAxis(leftD);
 		menu = rightD.GetPressUp(SteamVR_Controller.ButtonMask.ApplicationMenu) || leftD.GetPressUp(SteamVR_Controller.ButtonMask.ApplicationMenu);
 		leftMenu = leftD.GetPressUp(SteamVR_Controller.ButtonMask.ApplicationMenu);
+		rightMenu = rightD.GetPressUp(SteamVR_Controller.ButtonMask.ApplicationMenu);
+
+		trigger = rightD.GetTouchUp(SteamVR_Controller.ButtonMask.Trigger) || leftD.GetTouchUp(SteamVR_Controller.ButtonMask.Trigger);
 		/*if(distRC <= distLC)
 			distHead = distRC;
 		else
@@ -72,29 +59,8 @@ public class controller_stuff : MonoBehaviour {
 	void FixedUpdate () {
 		rightPos = right.gameObject.transform.position;
 	    leftPos = left.gameObject.transform.position;
-		Rigidbody rb = selected.GetComponent<Rigidbody>();
-		if(grip && sizeLocked){
-			transform.parent = null;
-			selected.tag = "sizeable";
-			rb.useGravity = false;
-			selected.transform.position = new Vector3(selected.transform.position.x, 1.0f, selected.transform.position.z);
-			sizeLocked = false;
-		}else if(grip && !sizeLocked){
-			rb.gameObject.tag = "pickable";
-			rb.useGravity = true;
-			sizeLocked = true;
-		}
-
-		if(!sizeLocked){
-			//distRC = Vector3.Distance(head.transform.position, rightPos);
-			//distLC = Vector3.Distance(head.transform.position, leftPos);
-			totalDist = Vector3.Distance(leftPos, rightPos);
-			selected.transform.localScale = new Vector3(totalDist *3.0F, totalDist *3.0F, totalDist *3.0F);
-			if(totalDist> 0.3){
-				meshRendererFlag.material.color = Color.green;
-			}else{
-				meshRendererFlag.material.color = Color.red;
-			}
-		}
+	    //distRC = Vector3.Distance(head.transform.position, rightPos);
+		//distLC = Vector3.Distance(head.transform.position, leftPos);
+	    totalDist = Vector3.Distance(leftPos, rightPos);
 	}
 }

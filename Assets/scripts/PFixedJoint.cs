@@ -9,9 +9,13 @@ public class PFixedJoint : MonoBehaviour {
 	FixedJoint fixedJoint;
 	Vector3 origPos;
 	Transform origParent;
+	public controller_stuff controllers;
 
 	void Awake () {
 		trackedObj = GetComponent<SteamVR_TrackedObject>();
+	}
+	void Start(){
+		controllers.touching = false;
 	}
 	
 	// Update is called once per frame
@@ -20,6 +24,7 @@ public class PFixedJoint : MonoBehaviour {
 	}
 
 	void OnTriggerStay(Collider col){
+		controllers.touching = true;
 		Rigidbody rb = col.gameObject.GetComponent<Rigidbody>();
 		//if the fixedjoint isnt there, the trigger button is pressed, and object is pickable
 		if(fixedJoint == null && device.GetTouch(SteamVR_Controller.ButtonMask.Trigger) && col.gameObject.tag.Contains("pickable")){
@@ -41,6 +46,10 @@ public class PFixedJoint : MonoBehaviour {
 		}
 		if(rb != null)
 			rb.WakeUp();
+	}
+
+	void OnTriggerExit(Collider other){
+		//controllers.touching = false;
 	}
 
 	void tossObject(Rigidbody rigidBody){

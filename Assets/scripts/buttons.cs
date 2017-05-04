@@ -3,40 +3,42 @@ using System.Collections;
 
 public class buttons : MonoBehaviour {
 	public toggle_vr vr;
-	public GameObject leftC;
-	public GameObject rightC;
-	SteamVR_TrackedController left;
-	SteamVR_TrackedController right;
+	public controller_stuff controller;
+	public bool trigger;
+	public bool leftMenu;
+	public bool rightMenu;
+	public bool grip;
+	public bool touching;
+	public bool canTeleport;
+	public float scroll;
 	// Use this for initialization
 	void Start () {
 		vr = GetComponent<toggle_vr>();
-		left = leftC.GetComponent<SteamVR_TrackedController>();
-		right = rightC.GetComponent<SteamVR_TrackedController>();
 	}
 
 	// Update is called once per frame
 	void Update () {
-		
+		if(touching && !vr.on){
+			Debug.Log("boop");
+		}
 	}
 	
-	public string checkButtons(){
+	public void checkButtons(){
 		if (vr.on) {
-			/*if (left.triggerPressed || right.triggerPressed) {
-				return "Flashlight";
-			} else {
-				return null;
-			}*/
-			return null;
+			if(controller.trigger && !controller.touching){
+				canTeleport = true;
+			}else{
+				canTeleport = false;
+			}
 		}else{
 			if (Input.GetKeyDown (KeyCode.E)) {
-				return "Pickup";
+				trigger=true;
 			} else if (Input.GetKeyDown (KeyCode.F)) {
-				return "Flashlight";
+				Debug.Log("f");
 			} else if(Input.GetKey("q")){
 				Application.Quit();
-				return null;
-			}else {
-				return null;
+			}else{
+				trigger = false;
 			}
 		}
 	}

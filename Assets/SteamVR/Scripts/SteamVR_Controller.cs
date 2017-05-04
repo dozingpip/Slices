@@ -12,9 +12,12 @@
 
 using UnityEngine;
 using Valve.VR;
+using UnityEngine.UI;
+using System;
 
 public class SteamVR_Controller
 {
+	//public Text warning;
 	public class ButtonMask
 	{
 		public const ulong System			= (1ul << (int)EVRButtonId.k_EButton_System); // reserved

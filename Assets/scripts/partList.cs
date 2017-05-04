@@ -5,17 +5,15 @@ using UnityEngine.UI;
 
 public class partList : MonoBehaviour {
 	public labels l;
-	List<string> partsList;
 	public GameObject button;
-	public Transform contentArea;
 	public Scrollbar scrolly;
 	public merge_body body;
-	float count;
 
 	// Use this for initialization
-	void Start () {
-		partsList = l.partList;
-		count = 0;
+	public void init () {
+		Transform contentArea = transform.GetChild(0).GetChild(0);
+		List<string> partsList = l.labelAll();
+		float count = 0;
 		foreach(string name in partsList){
 			GameObject but = Instantiate(button);
 			but.transform.Find("Text").GetComponent<Text>().text = name;
@@ -30,11 +28,5 @@ public class partList : MonoBehaviour {
 		}
 		scrolly.numberOfSteps = contentArea.childCount;
 		scrolly.size = 1/count;
-		gameObject.SetActive(false);
-	}
-	
-	// Update is called once per frame
-	void Update () {
-
 	}
 }

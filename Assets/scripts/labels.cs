@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class labels : MonoBehaviour {
 	public GameObject label;
-	public List<string> partList = new List<string>();
-	// Use this for initialization
-	void Start () {
+	List<string> partList = new List<string>();
+
+	public List<string> labelAll(){
 		foreach(GameObject part in GameObject.FindGameObjectsWithTag("body")){
 			GameObject temp = Instantiate(label);
 			temp.transform.parent = part.transform;
@@ -15,10 +15,6 @@ public class labels : MonoBehaviour {
 			temp.GetComponent<showLabel>().hide();
 			partList.Add(part.name);
 		}
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+		return partList;
 	}
 }
