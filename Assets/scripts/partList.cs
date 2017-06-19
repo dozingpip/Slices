@@ -20,8 +20,10 @@ public class partList : MonoBehaviour {
 			but.transform.SetParent(contentArea);
 			but.name = name;
 			but.GetComponent<uiButtonPress>().body = body;
-			but.transform.localPosition = button.transform.position;
-			but.transform.localPosition = new Vector3(but.transform.localPosition.x, but.transform.localPosition.y -150 - count*40, but.transform.localPosition.z);
+			RectTransform rect = but.GetComponent<RectTransform>();
+			rect.anchoredPosition = button.GetComponent<RectTransform>().anchoredPosition;
+			rect.anchoredPosition = new Vector2(0f, rect.anchoredPosition.y - count*40);
+			rect.localPosition = new Vector3(rect.localPosition.x, rect.localPosition.y, 0f);
 			but.transform.localRotation = button.transform.rotation;
 			but.transform.localScale = button.transform.localScale;
 			count+=1;

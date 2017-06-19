@@ -22,6 +22,7 @@ public class showHide : MonoBehaviour {
 		guideShown = true;
 		listShown = false;
 		listView.GetComponent<partList>().init();
+		ui.SetActive(true);
 	}
 	
 	// Update is called once per frame
@@ -54,7 +55,6 @@ public class showHide : MonoBehaviour {
 	}
 
 	public void showList(){
-		ui.SetActive(true);
 		listView.transform.localScale = changeScale(listShowPos.localScale, listView.transform.localScale, 1.0f);
 		listView.transform.position = Vector3.MoveTowards(listView.transform.position, listShowPos.position, speed*Time.deltaTime);
 	}
@@ -62,6 +62,7 @@ public class showHide : MonoBehaviour {
 	public void hideList(){
 		listView.transform.localScale = changeScale(listShowPos.localScale, listView.transform.localScale, 0.2f);
 		listView.transform.position = Vector3.MoveTowards(listView.transform.position, listHidePos.position, speed*Time.deltaTime);
+		listShown = false;
 	}
 
 	public void showGuide(){

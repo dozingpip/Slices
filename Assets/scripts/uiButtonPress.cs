@@ -5,43 +5,29 @@ using UnityEngine.UI;
 
 public class uiButtonPress : MonoBehaviour {
 	public merge_body body;
-	public Color hoverColor;
-	showHide showhide;
-	Color origColor;
-	// Use this for initialization
+	public Button btn;
+	showHide showhide;	// Use this for initialization
 	void Start () {
-		origColor = GetComponent<Button>().colors.normalColor;
+		btn = GetComponent<Button>();
 		// gameobject container is 5 levels up
 		showhide = transform.parent.parent.parent.parent.parent.GetComponent<showHide>();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-
-	}
 
 	public void hover(){
-		changeColor(hoverColor);
+		btn.Select();
 	}
 
 	public void notHover(){
-		changeColor(origColor);
+		GameObject myEventSystem = GameObject.Find("EventSystem");
+		myEventSystem .GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(null);
 	}
 
 	public void press(){
-		Debug.Log(name + " button pressed ");
+		body.block();
+		Debug.Log(name+ " button was pressed");
+		body.select(name);
 		body.teleportTo(name);
 		showhide.hideList();
 		notHover();
-	}
-
-	public void unPress(){
-
-	}
-
-	void changeColor(Color newColor){
-		ColorBlock colors = GetComponent<Button>().colors;
-		colors.normalColor = newColor;
-		GetComponent<Button>().colors = colors;
 	}
 }

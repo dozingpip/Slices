@@ -12,10 +12,10 @@ public class merge_body : MonoBehaviour {
 	Transform lastSelected;
 	float index;
 	int timeScrolling;
-	float speedD = 4f;
 	float speed;
 	public float scrollSmallestInc;
 	public Transform OriginTransform;
+	float part_dist = 0f;
 
 
 	// Use this for initialization
@@ -29,23 +29,21 @@ public class merge_body : MonoBehaviour {
 			locked = false;
 			//after just unlocking position, set all the parts to their proper positions
 			foreach(Transform part in transform){
-				part.position = new Vector3(0, transform.position.y, part.position.z);
+				updateLastSelected(part);
 			}
-			selected.gameObject.tag = "body";
-			Object.Destroy(selected.GetComponent<Rigidbody>());
 		}else if(controller.grip && !locked){
-			index = 0;
-			locked = true;
+			block();
 		}
 		//if parts are unlocked and the controllers aren't too close together
-		if(!locked && controller.totalDist > 0.2){
+		if(!locked && controller.totalDist > 0.35){
 			float incount = 0;
 			//vary position based on which index the part is in in the hierarchy.
 			foreach(Transform part in transform){
 				incount+=1;
+				part_dist = controller.totalDist;
 				//stay centered on the x, keep the main body's y position, but then for the z axis, base it on the distance 
 				//between the controllers* a constant* what index the part is at in the local hierarchy of the body
-				part.position = new Vector3(0, transform.position.y,(controller.totalDist*10 * (incount/transform.childCount) ) );
+				part.position = new Vector3(0, transform.position.y,(part_dist*14 * (incount/transform.childCount) ) );
 			}
 		}else if(locked){
 			if(controller.scroll > 0.2f){
@@ -72,10 +70,14 @@ public class merge_body : MonoBehaviour {
 				select(selected, lastSelected);
 				if(!controller.touching && controller.trigger){
 					teleportTo(selected.gameObject.name);
-					//arrows.WakeUp();
 				}
 			}
 		}
+	}
+
+	public void block(){
+		index = 0;
+		locked = true;
 	}
 
 	void updateIndicator(float i){
@@ -83,11 +85,21 @@ public class merge_body : MonoBehaviour {
 		timeScrolling+=1;
 	}
 
-
 	public void teleportTo(string partName){
-		//Debug.Log("teleporting to " + partName);
-		Vector3 offset = new Vector3(0f, -1.0f, 0.2f);
+		Debug.Log("teleporting to " + partName);
+		float z_offset = (1*part_dist*10/ (transform.childCount))/2 +0.8f;
+		if(z_offset>1.2f){
+			z_offset-=0.8f;
+		}
+		Vector3 offset = new Vector3(0f, -0.7f, z_offset);
 		OriginTransform.position = transform.Find(partName).position + offset;
+	}
+
+	public void select(string name){
+		selected = transform.Find(name);
+		index = selected.GetSiblingIndex();
+		updateIndicator(index);
+		select(selected, null);
 	}
 	
 	void select(Transform s, Transform ls){
@@ -105,9 +117,8 @@ public class merge_body : MonoBehaviour {
 
 	void updateLastSelected(Transform ls){
 		if(ls != null){
-			float step = speedD * Time.deltaTime;
 			Vector3 toward = new Vector3(transform.position.x, transform.position.y, ls.position.z);
-     		ls.position = Vector3.MoveTowards(ls.position, toward, step);
+     		ls.position = toward;
      		ls.rotation = Quaternion.Euler(90f, 0f, 0f);
      		if(ls.gameObject.GetComponent<FixedJoint>() != null)
      			Object.Destroy(ls.gameObject.GetComponent<FixedJoint>());
